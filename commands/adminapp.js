@@ -1,17 +1,17 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: 'modapp',
-  description: 'Sends moderator application embed',
+  name: 'adminapp',
+  description: 'Sends admin application embed',
 
   async execute(message, args) {
     const embed = new EmbedBuilder()
-      .setColor('#a8d5ba')
+      .setColor('#BFA2DB')
       .setDescription(
-`# <:aa_star:1478802523190984727> **moderator application**
+`# <:aa_star:1478802523190984727> **admin application**
 
-<:aa_heart:1478802351279312928> thank you for opening a **moderator application ticket** for **ava’s assortments**!  
-this role focuses on **moderating chats and supporting members**.  
+<:aa_heart:1478802351279312928> thank you for opening an **admin application ticket** for **ava’s assortments**!  
+this role is for **discord server administration only** and does **not include access to the website**.  
 please answer the questions below so we can learn more about you 💗  
 
 <:faeries_idash:1403040647098667058> <:aa_heart:1478802351279312928> <:faeries_idash:1403040647098667058> <:aa_heart:1478802351279312928> <:faeries_idash:1403040647098667058> <:aa_heart:1478802351279312928> 
@@ -20,14 +20,16 @@ please answer the questions below so we can learn more about you 💗
 (example: username#0000)  
 **2 | age**  
 **3 | timezone**  
-**4 | tell us about yourself**  
-**5 | do you have previous moderation experience?**  
-if yes, please list servers and roles.  
-**6 | why would you like to become a moderator?**  
-**7 | how would you handle members arguing in chat?**  
-**8 | how would you deal with someone breaking the rules repeatedly?**  
-**9 | are you comfortable helping with tickets and member questions?**  
-**10 | anything else you’d like us to know?**
+**4 | how active are you able to be in the server?**  
+(approximate hours per day)  
+**5 | do you have previous moderation/admin experience?**  
+if yes, please list the servers and roles.  
+**6 | why would you like to become an admin for ava’s assortments?**  
+**7 | what do you think the responsibilities of a server admin are?**  
+**8 | how would you handle a situation where two members are arguing in chat?**  
+**9 | how would you deal with someone repeatedly breaking the rules?**  
+**10 | are you comfortable helping with tickets, member questions, and keeping chats safe and friendly?**  
+**11 | anything else you’d like us to know?**
 
 <:faeries_idash:1403040647098667058> <:aa_heart:1478802351279312928> <:faeries_idash:1403040647098667058> <:aa_heart:1478802351279312928> <:faeries_idash:1403040647098667058> <:aa_heart:1478802351279312928> 
 
