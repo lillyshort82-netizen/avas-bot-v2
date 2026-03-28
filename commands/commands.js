@@ -54,8 +54,6 @@ module.exports = {
 > <:aa_dot:1482042307338305556> ***!ready @user*** :: __notify order is ready__  
 ## <:aa_heart:1478802351279312928> **partnerships**
 > <:aa_dot:1482042307338305556> ***!partnership*** :: __send partnership information / format__  
-## <:aa_heart:1478802351279312928> **utility**
-> <:aa_dot:1482042307338305556> ***!ping*** :: __check if the bot is online__  
       `)
       .setFooter({ text: 'Ava’s Assortments • Staff Commands' });
 
