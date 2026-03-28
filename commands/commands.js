@@ -13,7 +13,7 @@ module.exports = {
       .setColor('#8CABCF')
       .setTimestamp()
       .setDescription(`
-# <:aa_pin:1482068887205056572> **staff commands**
+# <:aa_pin:1482068887205056572> **__staff commands__**
 ## <:aa_1:1482044265423962226> **applications**
 > <:aa_dot:1482042307338305556> ***!accepted*** :: __accept a user’s application__  
 > <:aa_dot:1482042307338305556> ***!adminapp*** :: __send the admin application__  
