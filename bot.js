@@ -1,13 +1,15 @@
 require('dotenv').config();
+
 const fs = require('fs');
 const path = require('path');
-
 const {
   Client,
   GatewayIntentBits,
   Collection,
   EmbedBuilder
 } = require('discord.js');
+
+const prefix = '!';
 
 const client = new Client({
   intents: [
@@ -18,10 +20,11 @@ const client = new Client({
   ]
 });
 
-const prefix = '!';
 client.commands = new Collection();
 
-const loadCommands = (dir) => {
+function loadCommands(dir) {
+  if (!fs.existsSync(dir)) return;
+
   const files = fs.readdirSync(dir);
 
   for (const file of files) {
@@ -29,12 +32,21 @@ const loadCommands = (dir) => {
 
     if (fs.statSync(filePath).isDirectory()) {
       loadCommands(filePath);
-    } else if (file.endsWith('.js')) {
-      const command = require(filePath);
-      client.commands.set(command.name, command);
+      continue;
     }
+
+    if (!file.endsWith('.js')) continue;
+
+    const command = require(filePath);
+
+    if (!command.name || typeof command.execute !== 'function') {
+      console.warn(`Skipped ${file}: missing name or execute`);
+      continue;
+    }
+
+    client.commands.set(command.name, command);
   }
-};
+}
 
 loadCommands(path.join(__dirname, 'commands'));
 
@@ -49,8 +61,6 @@ client.on('messageCreate', async (message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift()?.toLowerCase();
 
-  if (!commandName) return;
-
   const command = client.commands.get(commandName);
   if (!command) return;
 
@@ -58,23 +68,19 @@ client.on('messageCreate', async (message) => {
     await command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.channel.send('there was an error running that command 💔').catch(() => {});
+    await message.channel.send('there was an error running that command 💔').catch(() => {});
   }
 });
 
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isStringSelectMenu()) return;
-
   if (interaction.customId !== 'faq_menu') return;
-
-  const page = interaction.values[0];
 
   const pages = {
     website: {
       color: '#F7C6D9',
       title: '<:aa_shop:1478804321289371694> ﹒website + ordering ✦',
-      desc:
-`<:000_swirl1:1487811769367007263> ﹒*for anything order-related, check our [*website*](https://avas-assortments.com/)* ♡
+      desc: `<:000_swirl1:1487811769367007263> ﹒*for anything order-related, check our [*website*](https://avas-assortments.com/)* ♡
 
 <:aa_dot:1482042307338305556> ﹒**how do i order / view items?**
 𓂃 *browse, customise & place your order on the [*website*](https://avas-assortments.com/)*
@@ -86,8 +92,7 @@ client.on('interactionCreate', async (interaction) => {
     payments: {
       color: '#DFA3B6',
       title: '<:aa_money:1482055752477577346> ﹒payments + fees ✦',
-      desc:
-`<:000_swirl2:1487812296905330829> ﹒*simple & flexible* ♡
+      desc: `<:000_swirl2:1487812296905330829> ﹒*simple & flexible* ♡
 
 <:aa_dot:1482042307338305556> ﹒**BBC** 💸 ・ **robux** 💎 ・ **bloxbux** 🪙 ・ **nitro** ✨
 <:aa_dot:1482042307338305556> ﹒combine **BBC + robux**
@@ -99,8 +104,7 @@ client.on('interactionCreate', async (interaction) => {
     delivery: {
       color: '#CDE7D8',
       title: '<:aa_wand:1487809466433933382> ﹒pickup + delivery ✦',
-      desc:
-`<:aa_dot:1482042307338305556> ﹒**standard pickup** — *meet in-game at our bakery*
+      desc: `<:aa_dot:1482042307338305556> ﹒**standard pickup** — *meet in-game at our bakery*
 <:aa_arrow:1482041725978542101> ﹒receive a **pickup time & location**
 <:aa_arrow:1482041725978542101> ﹒collect within your **3 day timeframe**
 
@@ -112,8 +116,7 @@ client.on('interactionCreate', async (interaction) => {
     priority: {
       color: '#E8F5EE',
       title: '<:aa_star:1478802523190984727> ﹒priority + memberships ✦',
-      desc:
-`<:000_swirl1:1487811769367007263> ﹒*speed up & unlock perks* ♡
+      desc: `<:000_swirl1:1487811769367007263> ﹒*speed up & unlock perks* ♡
 
 <:aa_dot:1482042307338305556> ﹒**priority pass** — move up the queue
 <:aa_dot:1482042307338305556> ﹒**memberships** — permanent perks & discounts
@@ -125,8 +128,7 @@ client.on('interactionCreate', async (interaction) => {
     help: {
       color: '#F7C6D9',
       title: '<:aa_question:1482059914414129213> ﹒help + tickets ✦',
-      desc:
-`<:000_swirl2:1487812296905330829> ﹒*please check the [*website*](https://avas-assortments.com/) first* ♡
+      desc: `<:000_swirl2:1487812296905330829> ﹒*please check the [*website*](https://avas-assortments.com/) first* ♡
 
 <:aa_dot:1482042307338305556> ﹒open a ticket if your order has an issue
 <:aa_dot:1482042307338305556> ﹒staff can help with payments, delivery or account issues
@@ -134,7 +136,8 @@ client.on('interactionCreate', async (interaction) => {
     }
   };
 
-  const selected = pages[page];
+  const selected = pages[interaction.values[0]];
+  if (!selected) return;
 
   const embed = new EmbedBuilder()
     .setColor(selected.color)
